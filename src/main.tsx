@@ -1,11 +1,11 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import './App.css'
-import App from './App'
+import WebSiteBuilder from './pages/WebSiteBuilder'
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <WebSiteBuilder />
   </React.StrictMode>,
   document.getElementById('root')
 )
