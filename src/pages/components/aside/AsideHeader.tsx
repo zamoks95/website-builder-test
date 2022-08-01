@@ -1,8 +1,4 @@
-import {
-  AiOutlineMinusCircle,
-  AiOutlineArrowLeft,
-  AiOutlineArrowRight
-} from 'react-icons/ai'
+import { AiOutlineArrowLeft, AiOutlineArrowRight } from 'react-icons/ai'
 type AsideHeaderProps = {
   isOpen: boolean
   toggleOpen: () => void

@@ -1,109 +1,122 @@
-import { useState } from 'react'
-import { AiOutlinePlus } from 'react-icons/ai'
-import { FiEdit } from 'react-icons/fi'
+import { useState, Dispatch, ReactNode } from 'react'
+import { Box, Popover, Stack, TextField } from '@mui/material'
+import { renderToString } from 'react-dom/server'
+import reactStringReplace from 'react-string-replace'
 
-import { Element, elementsList } from './Elements'
+import {
+  ReducerActionKind,
+  ReducerActionTypes,
+  ReducerState
+} from '../webSiteBuilderReducer'
+import { Component, ComponentField } from '../../domain/builder'
 
 type SectionProps = {
   id: string
-  element: Element['component'] | undefined
-  editSection: () => void
+  component: Component
+  fields: ComponentField[]
+  dispatch: Dispatch<ReducerActionTypes>
+  settings: ReducerState['settings']
 }
 
-type NewSectionProps = {
-  onElementSelected: (element: Element) => void
+const replaceNodeWithDynamicVariables = (
+  node: ReactNode,
+  fields: any,
+  colors: ReducerState['colors']
+) => {
+  const stringifiedNode = renderToString(node)
+  let newNode = stringifiedNode
+  fields.forEach((field: any) => {
+    newNode = reactStringReplace(newNode, field.id, () => field.value).join('')
+  })
+  newNode = reactStringReplace(
+    newNode,
+    '__colorPrimary__',
+    () => colors.primary
+  ).join('')
+
+  newNode = reactStringReplace(
+    newNode,
+    '__colorSecondary__',
+    () => colors.secondary
+  ).join('')
+
+  return <div dangerouslySetInnerHTML={{ __html: newNode }} />
 }
 
-type AddNewSectionProps = {
-  onClick: () => void
-}
+const Section = ({
+  id,
+  component,
+  fields,
+  settings,
+  dispatch
+}: SectionProps) => {
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
 
-type SectionSelectElementProps = {
-  onElementSelect: (element: Element) => void
-}
-type SectionTooltipProps = {
-  editSection: () => void
-}
+  const handleFieldChange = (fieldId: string, value: string) => {
+    dispatch({
+      type: ReducerActionKind.SectionUpdateFields,
+      payload: {
+        sectionId: id,
+        fieldId: fieldId,
+        value: value
+      }
+    })
+  }
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget)
+  }
 
-const SectionTooltip = ({ editSection }: SectionTooltipProps) => {
-  return (
-    <div className="absolute bottom-0 right-0">
-      <button
-        onClick={editSection}
-        className="cursor-pointer bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center"
-      >
-        <FiEdit />
-        <span className="pl-2">Edit</span>
-      </button>
-    </div>
-  )
-}
+  const handleClose = () => {
+    setAnchorEl(null)
+  }
 
-const Section = ({ id, element, editSection }: SectionProps) => {
-  const [isMouseHover, setIsMouseHover] = useState<boolean>(false)
+  const open = Boolean(anchorEl)
+  const popoverId = open ? 'section-popover' : undefined
   return (
     <section
-      className="w-auto block text-center hover:border-4 border-slate-600 relative"
+      className="w-auto block my-2 text-center cursor-pointer border-slate-600 relative hover:outline outline-4 outline-blue-500 transition-all"
       id={id}
-      onMouseEnter={() => setIsMouseHover(true)}
-      onMouseLeave={() => setIsMouseHover(false)}
     >
-      {element}
-      {isMouseHover && <SectionTooltip editSection={editSection} />}
+      <div aria-describedby={popoverId} onClick={handleClick}>
+        {replaceNodeWithDynamicVariables(
+          component.render,
+          fields,
+          settings.colors
+        )}
+      </div>
+      <Popover
+        id={popoverId}
+        open={open}
+        anchorEl={anchorEl}
+        onClose={handleClose}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'center'
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'center'
+        }}
+      >
+        <Box width={'400px'} p={2} maxWidth={'100%'}>
+          <Stack gap={3}>
+            {fields.map((field) => (
+              <TextField
+                key={field.id}
+                label={field.name}
+                value={field.value}
+                variant="outlined"
+                onChange={(event) =>
+                  handleFieldChange(field.id, event.target.value)
+                }
+              />
+            ))}
+          </Stack>
+        </Box>
+      </Popover>
     </section>
   )
 }
 
-const AddNewSection = ({ onClick }: AddNewSectionProps) => {
-  return (
-    <div
-      className="w-auto block py-10 block hover:opacity-100 text-center cursor-pointer flex justify-center opacity-70"
-      onClick={onClick}
-    >
-      <AiOutlinePlus />
-    </div>
-  )
-}
-
-const SectionSelectElement = ({
-  onElementSelect
-}: SectionSelectElementProps) => {
-  const handleSelectOnChange = (event: any) => {
-    const selectedElement = elementsList.find(
-      ({ id }) => id === event.target.value
-    )
-    if (selectedElement) {
-      onElementSelect(selectedElement)
-    }
-  }
-  return (
-    <div className="w-auto block py-10 block text-center flex justify-center">
-      <select onChange={handleSelectOnChange} defaultValue={undefined}>
-        <option value={undefined} label={'Select an element'} />
-        {elementsList.map(({ name, id }) => (
-          <option value={id} label={name} key={id} />
-        ))}
-      </select>
-    </div>
-  )
-}
-
-const NewSection = ({ onElementSelected }: NewSectionProps) => {
-  const [isEdditing, setIsEditing] = useState<boolean>(false)
-  const handleNewSectionClick = () => {
-    setIsEditing(true)
-  }
-  const handleElementSelected = (element: Element) => {
-    onElementSelected(element)
-    setIsEditing(false)
-  }
-
-  return isEdditing ? (
-    <SectionSelectElement onElementSelect={handleElementSelected} />
-  ) : (
-    <AddNewSection onClick={handleNewSectionClick} />
-  )
-}
-
-export { Section, NewSection }
+export { Section }
 export type { SectionProps }

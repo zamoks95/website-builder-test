@@ -1,40 +1,29 @@
-import { useState } from 'react'
-import { Element } from './components/Elements'
+import { useReducer } from 'react'
 import { Aside } from './components/aside/Aside'
 import { ViewPort } from './components/aside/AsideViewportPicker'
-import { Section, SectionProps, NewSection } from './components/Section'
+import { Section } from './components/Section'
+import { NewSection } from './components/NewSection'
+import { Reducer, ReducerState } from './webSiteBuilderReducer'
 
 const WebSiteBuilder = () => {
-  const [sections, setSections] = useState<SectionProps[]>([])
-  const [activeSectionId, setActiveSectionId] = useState<
-    SectionProps['id'] | undefined
-  >(undefined)
-
-  const [asideIsOpen, setAsideIsOpen] = useState<boolean>(false)
-  const [selectedViewport, setSelectedViewport] = useState<ViewPort>('desktop')
-  const handleToggleAsideIsOpen = () => {
-    setAsideIsOpen(!asideIsOpen)
-  }
-
-  const handleSelectedViewPortChange = (newViewPort: ViewPort) => {
-    setSelectedViewport(newViewPort)
-  }
-
-  const updateSection = (sectionId: SectionProps['id']) => {
-    setActiveSectionId(sectionId)
-  }
-
-  const addNewSection = (newElement: Element) => {
-    const newSections: SectionProps[] = [
-      ...sections,
-      {
-        id: `section-${sections.length + 1}`,
-        element: newElement.component,
-        editSection: () => updateSection(`section-${sections.length + 1}`)
+  const initialGlobalState: ReducerState = {
+    sections: [],
+    settings: {
+      colors: {
+        primary: 'violet',
+        secondary: 'orange'
+      },
+      typography: {
+        fontFamily: 'roboto',
+        fontSize: 'xl'
       }
-    ]
-    setSections(newSections)
+    },
+    socialNetworks: ['facebook', 'twitter'],
+    view: {
+      viewPort: 'desktop'
+    }
   }
+  const [globalState, dispatch] = useReducer(Reducer, initialGlobalState)
 
   const getMaxWidthBySelectedViewPort = (viewPort: ViewPort) => {
     switch (viewPort) {
@@ -51,21 +40,25 @@ const WebSiteBuilder = () => {
     <div className="flex flex-column justify-between bg-indigo-100">
       <main
         className={`w-full ${getMaxWidthBySelectedViewPort(
-          selectedViewport
+          globalState.view.viewPort
         )} mx-auto border-solid border-black bg-white h-screen overflow-x-hidden`}
       >
         <div>
-          {sections.length > 0 &&
-            sections.map((props) => <Section {...props} key={props.id} />)}
-          <NewSection onElementSelected={addNewSection} />
+          {globalState.sections.length > 0 &&
+            globalState.sections.map((section) => (
+              <Section
+                key={section.id}
+                id={section.id}
+                component={section.component}
+                dispatch={dispatch}
+                fields={section.fields}
+                settings={globalState.settings}
+              />
+            ))}
+          <NewSection dispatch={dispatch} />
         </div>
       </main>
-      <Aside
-        isOpen={asideIsOpen}
-        toggleOpen={handleToggleAsideIsOpen}
-        selectedViewPort={selectedViewport}
-        changeViewPort={handleSelectedViewPortChange}
-      />
+      <Aside globalState={globalState} dispatch={dispatch} />
     </div>
   )
 }

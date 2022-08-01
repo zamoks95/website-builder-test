@@ -1,0 +1,154 @@
+import {
+  Box,
+  Popover,
+  ListItemButton,
+  ListItem,
+  List,
+  ListItemText,
+  Grid,
+  Button,
+  IconButton,
+  Stack,
+  ListItemIcon
+} from '@mui/material'
+import { useState, MouseEvent, Dispatch } from 'react'
+import {
+  ReducerActionTypes,
+  ReducerActionKind
+} from '../../../webSiteBuilderReducer'
+
+import {
+  SocialNetwork,
+  socialNetworksList,
+  getSocialNetworkById
+} from '../../../../domain/social-networks'
+import { FaTrash } from 'react-icons/fa'
+
+type SocialNetworksPickerProps = {
+  dispatch: Dispatch<ReducerActionTypes>
+  selectedSocialNetworks: SocialNetwork['id'][]
+}
+
+type AvailableSocialNetworksListProps = {
+  selectedSocialNetwork: SocialNetwork['id'][]
+  onChange: (newSocialNetwork: SocialNetwork['id']) => void
+}
+
+type SelectedSocialNetworkItemProps = {
+  socialNetworkId: SocialNetwork['id']
+  dispatch: Dispatch<ReducerActionTypes>
+}
+const SelectedSocialNetworkItem = ({
+  socialNetworkId,
+  dispatch
+}: SelectedSocialNetworkItemProps) => {
+  const socialNetwork = getSocialNetworkById(socialNetworkId)
+
+  const handleRemoveSocialNetwork = (socialNetworkId: SocialNetwork['id']) => {
+    dispatch({
+      type: ReducerActionKind.SocialNetworkDelete,
+      payload: socialNetworkId
+    })
+  }
+  return (
+    <ListItem>
+      <ListItemIcon>{socialNetwork.icon}</ListItemIcon>
+      <ListItemText primary={socialNetwork.name} />
+      <IconButton
+        edge="end"
+        aria-label="delete"
+        onClick={() => handleRemoveSocialNetwork(socialNetworkId)}
+      >
+        <FaTrash />
+      </IconButton>
+    </ListItem>
+  )
+}
+
+const AvailableSocialNetworksList = ({
+  onChange,
+  selectedSocialNetwork
+}: AvailableSocialNetworksListProps) => {
+  const availableItems = socialNetworksList.filter(
+    ({ id }) => !selectedSocialNetwork.includes(id)
+  )
+  return (
+    <Grid container spacing={3}>
+      {availableItems.map((socialNetwork) => {
+        return (
+          <Grid item xs={3} key={socialNetwork.id}>
+            <IconButton onClick={() => onChange(socialNetwork.id)}>
+              {socialNetwork.icon}
+            </IconButton>
+          </Grid>
+        )
+      })}
+    </Grid>
+  )
+}
+
+const SocialNetworkPicker = ({
+  selectedSocialNetworks,
+  dispatch
+}: SocialNetworksPickerProps) => {
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
+
+  const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget)
+  }
+
+  const handleClose = () => {
+    setAnchorEl(null)
+  }
+
+  const open = Boolean(anchorEl)
+  const id = open ? 'simple-popover' : undefined
+
+  const handleSocialNetworkAdd = (newSocialNetworkId: SocialNetwork['id']) => {
+    dispatch({
+      type: ReducerActionKind.SocialNetworkAdd,
+      payload: newSocialNetworkId
+    })
+    handleClose()
+  }
+  return (
+    <>
+      <Stack>
+        <List>
+          {selectedSocialNetworks.map((socialNetworkId) => (
+            <SelectedSocialNetworkItem
+              socialNetworkId={socialNetworkId}
+              dispatch={dispatch}
+            />
+          ))}
+        </List>
+        {selectedSocialNetworks.length < socialNetworksList.length && (
+          <Button onClick={handleClick}>Add new</Button>
+        )}
+      </Stack>
+      <Popover
+        id={id}
+        open={open}
+        anchorEl={anchorEl}
+        onClose={handleClose}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'center'
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'center'
+        }}
+      >
+        <Box width={'250px'} p={2} maxWidth={'100%'}>
+          <AvailableSocialNetworksList
+            onChange={handleSocialNetworkAdd}
+            selectedSocialNetwork={selectedSocialNetworks}
+          />
+        </Box>
+      </Popover>
+    </>
+  )
+}
+
+export { SocialNetworkPicker }

@@ -1,103 +1,61 @@
-import { ReactElement } from 'react'
+import { ReactElement, Dispatch } from 'react'
+
+import { Box, ButtonGroup, Button, Typography } from '@mui/material'
 import {
-  AiOutlineDesktop,
-  AiOutlineMobile,
-  AiOutlineTablet
-} from 'react-icons/ai'
+  ReducerActionKind,
+  ReducerActionTypes
+} from '../../webSiteBuilderReducer'
+
 type ViewPort = 'mobile' | 'tablet' | 'desktop'
 
 type AsideViewportPickerProps = {
-  selectedViewPort: ViewPort
-  changeViewPort: (viewPort: ViewPort) => void
-  isAsideOpen: boolean
+  selectedViewPort: string
+  dispatch: Dispatch<ReducerActionTypes>
 }
 
 type ViewPortItem = {
   isSelected: boolean
   handleClick: (viewPort: ViewPort) => void
   id: ViewPort
-  icon: ReactElement
 }
 
-const ViewPortItem = ({ isSelected, handleClick, icon, id }: ViewPortItem) => {
+const ViewPortItem = ({ isSelected, handleClick, id }: ViewPortItem) => {
   return (
-    <li>
-      <button
-        onClick={() => {
-          handleClick(id)
-        }}
-        className={`p-2 text-base font-normal ${
-          isSelected && `bg-gray-700`
-        }  rounded-lg text-white  hover:bg-gray-700`}
-      >
-        {icon}
-      </button>
-    </li>
+    <Button
+      variant={isSelected ? 'contained' : 'outlined'}
+      onClick={() => handleClick(id)}
+      fullWidth={true}
+    >
+      <Typography>{id}</Typography>
+    </Button>
   )
 }
 
 const AsideViewportPicker = ({
   selectedViewPort,
-  changeViewPort,
-  isAsideOpen
+  dispatch
 }: AsideViewportPickerProps) => {
-  const viewPorts: { id: ViewPort; icon: ReactElement }[] = [
-    {
-      id: 'mobile',
-      icon: <AiOutlineMobile />
-    },
-    {
-      id: 'tablet',
-      icon: <AiOutlineTablet />
-    },
-    {
-      id: 'desktop',
-      icon: <AiOutlineDesktop />
-    }
-  ]
+  const viewPorts: ViewPort[] = ['mobile', 'tablet', 'desktop']
 
-  const getSelectedViewPort = (
-    selectedViewPort: ViewPort
-  ): { id: ViewPort; icon: ReactElement } => {
-    switch (selectedViewPort) {
-      case 'mobile':
-        return {
-          id: 'mobile',
-          icon: <AiOutlineMobile />
-        }
-      case 'tablet':
-        return {
-          id: 'tablet',
-          icon: <AiOutlineTablet />
-        }
-      default:
-        return {
-          id: 'desktop',
-          icon: <AiOutlineDesktop />
-        }
-    }
+  const handleViewPortChange = (viewPort: string) => {
+    dispatch({
+      type: ReducerActionKind.ViewViewPort,
+      payload: viewPort
+    })
   }
   return (
-    <ul className="flex pt-4 mt-4 space-y-2 border-t border-gray-700 items-baseline gap-2">
-      {isAsideOpen &&
-        viewPorts.map(({ id, icon }) => (
+    <Box sx={{ position: 'absolute', bottom: 0, left: 0, right: 0 }} m={2}>
+      <ButtonGroup aria-label="button group" fullWidth={true}>
+        {viewPorts.map((viewport) => (
           <ViewPortItem
-            isSelected={selectedViewPort === id}
-            handleClick={changeViewPort}
-            icon={icon}
-            id={id}
-            key={id}
+            isSelected={selectedViewPort === viewport}
+            handleClick={handleViewPortChange}
+            id={viewport}
+            key={viewport}
           />
         ))}
-      {!isAsideOpen && (
-        <ViewPortItem
-          isSelected={true}
-          handleClick={changeViewPort}
-          icon={getSelectedViewPort(selectedViewPort).icon}
-          id={getSelectedViewPort(selectedViewPort).id}
-        />
-      )}
-    </ul>
+      </ButtonGroup>
+    </Box>
   )
 }
 export { AsideViewportPicker }

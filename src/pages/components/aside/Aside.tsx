@@ -1,37 +1,38 @@
+import { Dispatch } from 'react'
 import { AsideViewportPicker, ViewPort } from './AsideViewportPicker'
-import { AsideHeader } from './AsideHeader'
 import { AsideContent } from './AsideContent'
+import { Drawer, Toolbar, Divider } from '@mui/material'
+import { ReducerState, ReducerActionTypes } from '../../webSiteBuilderReducer'
 
 type AsideProps = {
-  isOpen: boolean
-  toggleOpen: () => void
-  selectedViewPort: ViewPort
-  changeViewPort: (viewPort: ViewPort) => void
+  globalState: ReducerState
+  dispatch: Dispatch<ReducerActionTypes>
 }
 
-const Aside = ({
-  isOpen,
-  toggleOpen,
-  selectedViewPort,
-  changeViewPort
-}: AsideProps) => {
+const Aside = ({ globalState, dispatch }: AsideProps) => {
+  const drawerWidth = 300
   return (
-    <aside
-      className={`${
-        isOpen ? `w-96` : `w-16`
-      } h-screen overflow-x-hidden transition-all`}
-      aria-label="Settings Sidebar"
+    <Drawer
+      sx={{
+        width: drawerWidth,
+        flexShrink: 0,
+        '& .MuiDrawer-paper': {
+          width: drawerWidth,
+          boxSizing: 'border-box'
+        },
+        position: 'relative'
+      }}
+      variant="permanent"
+      anchor="right"
     >
-      <div className="h-screen overflow-y-auto overflow-x-hidden py-4 px-3 bg-gray-50 rounded dark:bg-gray-800 flex flex-col justify-between">
-        <AsideHeader isOpen={isOpen} toggleOpen={toggleOpen} />
-        {isOpen && <AsideContent />}
-        <AsideViewportPicker
-          selectedViewPort={selectedViewPort}
-          changeViewPort={changeViewPort}
-          isAsideOpen={isOpen}
-        />
-      </div>
-    </aside>
+      <Toolbar />
+      <Divider />
+      <AsideContent globalState={globalState} dispatch={dispatch} />
+      <AsideViewportPicker
+        selectedViewPort={globalState.view.viewPort}
+        dispatch={dispatch}
+      />
+    </Drawer>
   )
 }
 export { Aside }
