@@ -1,29 +1,14 @@
-import { useReducer } from 'react'
 import { Aside } from './components/aside/Aside'
 import { ViewPort } from './components/aside/AsideViewportPicker'
 import { Section } from './components/Section'
 import { NewSection } from './components/NewSection'
-import { Reducer, ReducerState } from './webSiteBuilderReducer'
+import { useAppSelector } from '../hooks'
+import { selectViewport } from '../slices/viewport-slice'
+import { selectSections } from '../slices/sections-slice'
 
 const WebSiteBuilder = () => {
-  const initialGlobalState: ReducerState = {
-    sections: [],
-    settings: {
-      colors: {
-        primary: 'violet',
-        secondary: 'orange'
-      },
-      typography: {
-        fontFamily: 'roboto',
-        fontSize: 'xl'
-      }
-    },
-    socialNetworks: ['facebook', 'twitter'],
-    view: {
-      viewPort: 'desktop'
-    }
-  }
-  const [globalState, dispatch] = useReducer(Reducer, initialGlobalState)
+  const { viewport } = useAppSelector(selectViewport)
+  const { sections } = useAppSelector(selectSections)
 
   const getMaxWidthBySelectedViewPort = (viewPort: ViewPort) => {
     switch (viewPort) {
@@ -40,25 +25,23 @@ const WebSiteBuilder = () => {
     <div className="flex flex-column justify-between bg-indigo-100">
       <main
         className={`w-full ${getMaxWidthBySelectedViewPort(
-          globalState.view.viewPort
+          viewport
         )} mx-auto border-solid border-black bg-white h-screen overflow-x-hidden`}
       >
         <div>
-          {globalState.sections.length > 0 &&
-            globalState.sections.map((section) => (
+          {sections.length > 0 &&
+            sections.map((section) => (
               <Section
                 key={section.id}
                 id={section.id}
                 component={section.component}
-                dispatch={dispatch}
                 fields={section.fields}
-                settings={globalState.settings}
               />
             ))}
-          <NewSection dispatch={dispatch} />
+          <NewSection />
         </div>
       </main>
-      <Aside globalState={globalState} dispatch={dispatch} />
+      <Aside />
     </div>
   )
 }

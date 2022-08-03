@@ -1,9 +1,5 @@
 import { Box, Popover, ListItemButton, ListItemText, Grid } from '@mui/material'
-import { useState, MouseEvent, Dispatch } from 'react'
-import {
-  ReducerActionTypes,
-  ReducerActionKind
-} from '../../../webSiteBuilderReducer'
+import { useState, MouseEvent } from 'react'
 import {
   Color,
   ColorId,
@@ -11,13 +7,17 @@ import {
   getColorById
 } from '../../../../domain/color'
 
+import { useAppSelector, useAppDispatch } from '../../../../hooks'
+import {
+  selectPrimaryColor,
+  selectSecondaryColor,
+  updatePrimary,
+  updateSecondary
+} from '../../../../slices/colors-slice'
+
 type ColorPickerProps = {
   title: string
-  dispatch: Dispatch<ReducerActionTypes>
-  selectedColor: ColorId
-  dispatchActionKind:
-    | typeof ReducerActionKind.SettingsColorPrimary
-    | typeof ReducerActionKind.SettingsColorSecondary
+  pick: 'primary' | 'secondary'
 }
 
 type AvailableColorsListProps = {
@@ -71,12 +71,12 @@ const AvailableColorsList = ({
   )
 }
 
-const ColorPicker = ({
-  title,
-  selectedColor,
-  dispatch,
-  dispatchActionKind
-}: ColorPickerProps) => {
+const ColorPicker = ({ title, pick }: ColorPickerProps) => {
+  const selectedColor = useAppSelector(
+    pick === 'primary' ? selectPrimaryColor : selectSecondaryColor
+  )
+  const dispatch = useAppDispatch()
+
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
 
   const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
@@ -91,10 +91,11 @@ const ColorPicker = ({
   const id = open ? 'simple-popover' : undefined
 
   const handleColorChange = (newColor: ColorId) => {
-    dispatch({
-      type: dispatchActionKind,
-      payload: newColor
-    })
+    if (pick === 'primary') {
+      dispatch(updatePrimary(newColor))
+    } else {
+      dispatch(updateSecondary(newColor))
+    }
     handleClose()
   }
   return (

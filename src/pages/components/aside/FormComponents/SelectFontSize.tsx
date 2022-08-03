@@ -6,24 +6,16 @@ import {
   MenuItem,
   FormControl
 } from '@mui/material'
-import { Dispatch } from 'react'
-import {
-  ReducerActionTypes,
-  ReducerActionKind
-} from '../../../webSiteBuilderReducer'
 import { availableFontSizes, FontSizeId } from '../../../../domain/typography'
+import { useAppSelector, useAppDispatch } from '../../../../hooks'
+import { selectFontSize, updateSize } from '../../../../slices/typography-slice'
 
-type SelectFontSizeProps = {
-  dispatch: Dispatch<ReducerActionTypes>
-  selectedSize: FontSizeId
-}
+const SelectFontSize = () => {
+  const selectedSize = useAppSelector(selectFontSize)
+  const dispatch = useAppDispatch()
 
-const SelectFontSize = ({ selectedSize, dispatch }: SelectFontSizeProps) => {
   const handleChange = (event: SelectChangeEvent<FontSizeId>) => {
-    dispatch({
-      type: ReducerActionKind.SettingsTypographyFontSize,
-      payload: event.target.value
-    })
+    dispatch(updateSize(event.target.value))
   }
   return (
     <ListItemButton>
@@ -35,7 +27,9 @@ const SelectFontSize = ({ selectedSize, dispatch }: SelectFontSizeProps) => {
           sx={{ minHeight: '30px', height: '30px' }}
         >
           {availableFontSizes.map((fontSize) => (
-            <MenuItem value={fontSize.id}>{fontSize.name}</MenuItem>
+            <MenuItem key={fontSize.id} value={fontSize.id}>
+              {fontSize.name}
+            </MenuItem>
           ))}
         </Select>
       </FormControl>

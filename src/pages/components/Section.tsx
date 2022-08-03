@@ -1,28 +1,26 @@
-import { useState, Dispatch, ReactNode } from 'react'
+import { useState, ReactNode } from 'react'
 import { Box, Popover, Stack, TextField } from '@mui/material'
 import { renderToString } from 'react-dom/server'
 import reactStringReplace from 'react-string-replace'
 
-import {
-  ReducerActionKind,
-  ReducerActionTypes,
-  ReducerState
-} from '../webSiteBuilderReducer'
 import { Component, ComponentField } from '../../domain/builder'
+import { useAppSelector, useAppDispatch } from '../../hooks'
+import {
+  selectPrimaryColor,
+  selectSecondaryColor
+} from '../../slices/colors-slice'
+import { updateSectionFields } from '../../slices/sections-slice'
 
 type SectionProps = {
   id: string
   component: Component
   fields: ComponentField[]
-  dispatch: Dispatch<ReducerActionTypes>
-  settings: ReducerState['settings']
 }
 
-const replaceNodeWithDynamicVariables = (
-  node: ReactNode,
-  fields: any,
-  colors: ReducerState['colors']
-) => {
+const replaceNodeWithDynamicVariables = (node: ReactNode, fields: any) => {
+  const primaryColor = useAppSelector(selectPrimaryColor)
+  const secondaryColor = useAppSelector(selectSecondaryColor)
+
   const stringifiedNode = renderToString(node)
   let newNode = stringifiedNode
   fields.forEach((field: any) => {
@@ -31,36 +29,29 @@ const replaceNodeWithDynamicVariables = (
   newNode = reactStringReplace(
     newNode,
     '__colorPrimary__',
-    () => colors.primary
+    () => primaryColor
   ).join('')
 
   newNode = reactStringReplace(
     newNode,
     '__colorSecondary__',
-    () => colors.secondary
+    () => secondaryColor
   ).join('')
 
   return <div dangerouslySetInnerHTML={{ __html: newNode }} />
 }
 
-const Section = ({
-  id,
-  component,
-  fields,
-  settings,
-  dispatch
-}: SectionProps) => {
+const Section = ({ id, component, fields }: SectionProps) => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
 
-  const handleFieldChange = (fieldId: string, value: string) => {
-    dispatch({
-      type: ReducerActionKind.SectionUpdateFields,
-      payload: {
-        sectionId: id,
-        fieldId: fieldId,
-        value: value
-      }
-    })
+  const dispatch = useAppDispatch()
+
+  const handleFieldChange = (
+    sectionId: string,
+    fieldId: string,
+    value: string
+  ) => {
+    dispatch(updateSectionFields({ sectionId, fieldId, value }))
   }
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget)
@@ -78,11 +69,7 @@ const Section = ({
       id={id}
     >
       <div aria-describedby={popoverId} onClick={handleClick}>
-        {replaceNodeWithDynamicVariables(
-          component.render,
-          fields,
-          settings.colors
-        )}
+        {replaceNodeWithDynamicVariables(component.render, fields)}
       </div>
       <Popover
         id={popoverId}
@@ -107,7 +94,7 @@ const Section = ({
                 value={field.value}
                 variant="outlined"
                 onChange={(event) =>
-                  handleFieldChange(field.id, event.target.value)
+                  handleFieldChange(id, field.id, event.target.value)
                 }
               />
             ))}

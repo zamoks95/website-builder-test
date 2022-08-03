@@ -1,17 +1,9 @@
-import { ReactElement, Dispatch } from 'react'
-
 import { Box, ButtonGroup, Button, Typography } from '@mui/material'
-import {
-  ReducerActionKind,
-  ReducerActionTypes
-} from '../../webSiteBuilderReducer'
+
+import { useAppSelector, useAppDispatch } from '../../../hooks'
+import { selectViewport, changeViewport } from '../../../slices/viewport-slice'
 
 type ViewPort = 'mobile' | 'tablet' | 'desktop'
-
-type AsideViewportPickerProps = {
-  selectedViewPort: string
-  dispatch: Dispatch<ReducerActionTypes>
-}
 
 type ViewPortItem = {
   isSelected: boolean
@@ -31,24 +23,19 @@ const ViewPortItem = ({ isSelected, handleClick, id }: ViewPortItem) => {
   )
 }
 
-const AsideViewportPicker = ({
-  selectedViewPort,
-  dispatch
-}: AsideViewportPickerProps) => {
+const AsideViewportPicker = () => {
   const viewPorts: ViewPort[] = ['mobile', 'tablet', 'desktop']
-
-  const handleViewPortChange = (viewPort: string) => {
-    dispatch({
-      type: ReducerActionKind.ViewViewPort,
-      payload: viewPort
-    })
+  const selectedViewport = useAppSelector(selectViewport)
+  const dispatch = useAppDispatch()
+  const handleViewPortChange = (viewPort: ViewPort) => {
+    dispatch(changeViewport(viewPort))
   }
   return (
     <Box sx={{ position: 'absolute', bottom: 0, left: 0, right: 0 }} m={2}>
       <ButtonGroup aria-label="button group" fullWidth={true}>
         {viewPorts.map((viewport) => (
           <ViewPortItem
-            isSelected={selectedViewPort === viewport}
+            isSelected={selectedViewport.viewport === viewport}
             handleClick={handleViewPortChange}
             id={viewport}
             key={viewport}

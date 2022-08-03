@@ -1,4 +1,4 @@
-import { useState, Dispatch } from 'react'
+import { useState } from 'react'
 
 import {
   Box,
@@ -14,17 +14,7 @@ import { SocialNetworkPicker } from './FormComponents/SocialNetworkPicker'
 import { SelectFontFamily } from './FormComponents/SelectFontFamily'
 import { SelectFontSize } from './FormComponents/SelectFontSize'
 
-import {
-  ReducerState,
-  ReducerActionTypes,
-  ReducerActionKind
-} from '../../webSiteBuilderReducer'
-
-type AsideContentProps = {
-  globalState: ReducerState
-  dispatch: Dispatch<ReducerActionTypes>
-}
-const AsideContent = ({ globalState, dispatch }: AsideContentProps) => {
+const AsideContent = () => {
   const [expandedPanel, setExpandedPanel] = useState('')
   const handlePanelClick = (panelId: string) => {
     setExpandedPanel(panelId === expandedPanel ? '' : panelId)
@@ -39,18 +29,8 @@ const AsideContent = ({ globalState, dispatch }: AsideContentProps) => {
         expandedPanel={expandedPanel}
       >
         <List>
-          <ColorPicker
-            title="Primary Color"
-            selectedColor={globalState.settings.colors.primary}
-            dispatch={dispatch}
-            dispatchActionKind={ReducerActionKind.SettingsColorPrimary}
-          />
-          <ColorPicker
-            title="Secondary Color"
-            selectedColor={globalState.settings.colors.secondary}
-            dispatch={dispatch}
-            dispatchActionKind={ReducerActionKind.SettingsColorSecondary}
-          />
+          <ColorPicker title="Primary Color" pick="primary" />
+          <ColorPicker title="Secondary Color" pick="secondary" />
         </List>
       </AsideAccordion>
       <AsideAccordion
@@ -60,14 +40,8 @@ const AsideContent = ({ globalState, dispatch }: AsideContentProps) => {
         expandedPanel={expandedPanel}
       >
         <List>
-          <SelectFontFamily
-            selectedFamily={globalState.settings.typography.fontFamily}
-            dispatch={dispatch}
-          />
-          <SelectFontSize
-            selectedSize={globalState.settings.typography.fontSize}
-            dispatch={dispatch}
-          />
+          <SelectFontFamily />
+          <SelectFontSize />
         </List>
       </AsideAccordion>
       <AsideAccordion
@@ -76,10 +50,7 @@ const AsideContent = ({ globalState, dispatch }: AsideContentProps) => {
         handleExpanded={handlePanelClick}
         expandedPanel={expandedPanel}
       >
-        <SocialNetworkPicker
-          selectedSocialNetworks={globalState.socialNetworks}
-          dispatch={dispatch}
-        />
+        <SocialNetworkPicker />
       </AsideAccordion>
       <AsideAccordion
         title="Extra Components"

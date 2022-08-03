@@ -6,31 +6,22 @@ import {
   MenuItem,
   FormControl
 } from '@mui/material'
-import { Dispatch } from 'react'
-import {
-  ReducerActionTypes,
-  ReducerActionKind
-} from '../../../webSiteBuilderReducer'
 import {
   availableFontFamilies,
-  FontFamilyId,
-  getFontFamilyById
+  FontFamilyId
 } from '../../../../domain/typography'
+import { useAppSelector, useAppDispatch } from '../../../../hooks'
+import {
+  selectFontFamily,
+  updateFamily
+} from '../../../../slices/typography-slice'
 
-type SelectFontFamilyProps = {
-  dispatch: Dispatch<ReducerActionTypes>
-  selectedFamily: FontFamilyId
-}
+const SelectFontFamily = () => {
+  const selectedFamily = useAppSelector(selectFontFamily)
+  const dispatch = useAppDispatch()
 
-const SelectFontFamily = ({
-  selectedFamily,
-  dispatch
-}: SelectFontFamilyProps) => {
   const handleChange = (event: SelectChangeEvent<FontFamilyId>) => {
-    dispatch({
-      type: ReducerActionKind.SettingsTypographyFontFamily,
-      payload: event.target.value
-    })
+    dispatch(updateFamily(event.target.value))
   }
   return (
     <ListItemButton>
@@ -42,7 +33,9 @@ const SelectFontFamily = ({
           sx={{ minHeight: '30px', height: '30px' }}
         >
           {availableFontFamilies.map((fontFamily) => (
-            <MenuItem value={fontFamily.id}>{fontFamily.name}</MenuItem>
+            <MenuItem key={fontFamily.id} value={fontFamily.id}>
+              {fontFamily.name}
+            </MenuItem>
           ))}
         </Select>
       </FormControl>

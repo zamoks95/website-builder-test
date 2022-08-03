@@ -11,8 +11,18 @@ import {
   FaWhatsapp
 } from 'react-icons/fa'
 
+type SocialNetworkId =
+  | 'facebook'
+  | 'twitter'
+  | 'twitch'
+  | 'instagram'
+  | 'snapchat'
+  | 'spotify'
+  | 'soundcloud'
+  | 'steam'
+  | 'whatsapp'
 type SocialNetwork = {
-  id: string
+  id: SocialNetworkId
   name: string
   icon: ReactNode
 }
@@ -70,4 +80,4 @@ const getSocialNetworkById = (id: SocialNetwork['id']): SocialNetwork =>
   socialNetworksList[0]
 
 export { getSocialNetworkById, socialNetworksList }
-export type { SocialNetwork }
+export type { SocialNetwork, SocialNetworkId }

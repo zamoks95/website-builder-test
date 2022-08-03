@@ -1,15 +1,8 @@
-import { Dispatch } from 'react'
-import { AsideViewportPicker, ViewPort } from './AsideViewportPicker'
+import { AsideViewportPicker } from './AsideViewportPicker'
 import { AsideContent } from './AsideContent'
 import { Drawer, Toolbar, Divider } from '@mui/material'
-import { ReducerState, ReducerActionTypes } from '../../webSiteBuilderReducer'
 
-type AsideProps = {
-  globalState: ReducerState
-  dispatch: Dispatch<ReducerActionTypes>
-}
-
-const Aside = ({ globalState, dispatch }: AsideProps) => {
+const Aside = () => {
   const drawerWidth = 300
   return (
     <Drawer
@@ -27,11 +20,8 @@ const Aside = ({ globalState, dispatch }: AsideProps) => {
     >
       <Toolbar />
       <Divider />
-      <AsideContent globalState={globalState} dispatch={dispatch} />
-      <AsideViewportPicker
-        selectedViewPort={globalState.view.viewPort}
-        dispatch={dispatch}
-      />
+      <AsideContent />
+      <AsideViewportPicker />
     </Drawer>
   )
 }

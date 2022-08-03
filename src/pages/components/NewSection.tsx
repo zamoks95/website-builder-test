@@ -12,15 +12,21 @@ import {
   Popover,
   List
 } from '@mui/material'
+import Button from '@mui/material/Button'
+import Dialog from '@mui/material/Dialog'
+import DialogActions from '@mui/material/DialogActions'
+import DialogContent from '@mui/material/DialogContent'
+import DialogContentText from '@mui/material/DialogContentText'
+import DialogTitle from '@mui/material/DialogTitle'
 import { ComponentId, componentsList } from '../../domain/builder'
+import { ComponentSelector } from './componentSelector/ComponentSelector'
 
-import { ReducerActionTypes, ReducerActionKind } from '../webSiteBuilderReducer'
 import { AiOutlinePlus } from 'react-icons/ai'
-import { useState, Dispatch } from 'react'
+import { useState } from 'react'
 
-type NewSectionProps = {
-  dispatch: Dispatch<ReducerActionTypes>
-}
+import { useAppDispatch } from '../../hooks'
+import { addNewSection } from '../../slices/sections-slice'
+
 type SectionSelectElementProps = {
   onElementSelect: (componentId: ComponentId) => void
 }
@@ -78,6 +84,7 @@ const ElementPicker = ({ onElementSelect }: SectionSelectElementProps) => {
                 if (type === element.type) {
                   return (
                     <ListItemButton
+                      key={element.id}
                       onClick={() => handleSelectOnChange(element.id)}
                     >
                       <span>THIS IS PREVIEW FOR {element.name}</span>
@@ -94,51 +101,31 @@ const ElementPicker = ({ onElementSelect }: SectionSelectElementProps) => {
   )
 }
 
-const NewSection = ({ dispatch }: NewSectionProps) => {
-  const handleElementSelected = (element: Element) => {
-    dispatch({
-      type: ReducerActionKind.SectionNew,
-      payload: element
-    })
-    handleClose()
-  }
-  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget)
+const NewSection = () => {
+  const dispatch = useAppDispatch()
+  const [isComponentSelectorOpen, setIsComponentSelectorOpen] = useState(false)
+
+  const handleComponentSelectorToggle = () => {
+    setIsComponentSelectorOpen(!isComponentSelectorOpen)
   }
 
-  const handleClose = () => {
-    setAnchorEl(null)
+  const handleElementSelected = (element: ComponentId) => {
+    dispatch(addNewSection(element))
+    handleComponentSelectorToggle()
   }
-
-  const open = Boolean(anchorEl)
-  const id = open ? 'simple-popover' : undefined
 
   return (
     <Box sx={{ display: 'flex', justifyContent: 'center' }} py={3}>
       <Tooltip title="Create New Section">
-        <IconButton aria-describedby={id} onClick={handleClick}>
+        <IconButton onClick={handleComponentSelectorToggle}>
           <AiOutlinePlus />
         </IconButton>
       </Tooltip>
-      <Popover
-        id={id}
-        open={open}
-        anchorEl={anchorEl}
-        onClose={handleClose}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'center'
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'center'
-        }}
-      >
-        <Box width={'400px'} p={2} maxWidth={'100%'}>
-          <ElementPicker onElementSelect={handleElementSelected} />
-        </Box>
-      </Popover>
+      <ComponentSelector
+        isOpen={isComponentSelectorOpen}
+        toggleOpen={handleComponentSelectorToggle}
+        onElementSelect={handleElementSelected}
+      />
     </Box>
   )
 }

@@ -1,7 +1,6 @@
 import {
   Box,
   Popover,
-  ListItemButton,
   ListItem,
   List,
   ListItemText,
@@ -11,11 +10,7 @@ import {
   Stack,
   ListItemIcon
 } from '@mui/material'
-import { useState, MouseEvent, Dispatch } from 'react'
-import {
-  ReducerActionTypes,
-  ReducerActionKind
-} from '../../../webSiteBuilderReducer'
+import { useState, MouseEvent } from 'react'
 
 import {
   SocialNetwork,
@@ -24,31 +19,28 @@ import {
 } from '../../../../domain/social-networks'
 import { FaTrash } from 'react-icons/fa'
 
-type SocialNetworksPickerProps = {
-  dispatch: Dispatch<ReducerActionTypes>
-  selectedSocialNetworks: SocialNetwork['id'][]
-}
+import { useAppSelector, useAppDispatch } from '../../../../hooks'
+import {
+  selectSocialNetworks,
+  addSocialNetwork,
+  removeSocialNetwork
+} from '../../../../slices/social-networks-slice'
 
 type AvailableSocialNetworksListProps = {
-  selectedSocialNetwork: SocialNetwork['id'][]
   onChange: (newSocialNetwork: SocialNetwork['id']) => void
 }
 
 type SelectedSocialNetworkItemProps = {
   socialNetworkId: SocialNetwork['id']
-  dispatch: Dispatch<ReducerActionTypes>
 }
 const SelectedSocialNetworkItem = ({
-  socialNetworkId,
-  dispatch
+  socialNetworkId
 }: SelectedSocialNetworkItemProps) => {
   const socialNetwork = getSocialNetworkById(socialNetworkId)
+  const dispatch = useAppDispatch()
 
   const handleRemoveSocialNetwork = (socialNetworkId: SocialNetwork['id']) => {
-    dispatch({
-      type: ReducerActionKind.SocialNetworkDelete,
-      payload: socialNetworkId
-    })
+    dispatch(removeSocialNetwork(socialNetworkId))
   }
   return (
     <ListItem>
@@ -66,11 +58,12 @@ const SelectedSocialNetworkItem = ({
 }
 
 const AvailableSocialNetworksList = ({
-  onChange,
-  selectedSocialNetwork
+  onChange
 }: AvailableSocialNetworksListProps) => {
+  const selectedSocialNetworks = useAppSelector(selectSocialNetworks)
+
   const availableItems = socialNetworksList.filter(
-    ({ id }) => !selectedSocialNetwork.includes(id)
+    ({ id }) => !selectedSocialNetworks.socialNetworks.includes(id)
   )
   return (
     <Grid container spacing={3}>
@@ -87,10 +80,7 @@ const AvailableSocialNetworksList = ({
   )
 }
 
-const SocialNetworkPicker = ({
-  selectedSocialNetworks,
-  dispatch
-}: SocialNetworksPickerProps) => {
+const SocialNetworkPicker = () => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
 
   const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
@@ -104,25 +94,23 @@ const SocialNetworkPicker = ({
   const open = Boolean(anchorEl)
   const id = open ? 'simple-popover' : undefined
 
+  const selectedSocialNetworks = useAppSelector(selectSocialNetworks)
+  const dispatch = useAppDispatch()
+
   const handleSocialNetworkAdd = (newSocialNetworkId: SocialNetwork['id']) => {
-    dispatch({
-      type: ReducerActionKind.SocialNetworkAdd,
-      payload: newSocialNetworkId
-    })
+    dispatch(addSocialNetwork(newSocialNetworkId))
     handleClose()
   }
   return (
     <>
       <Stack>
         <List>
-          {selectedSocialNetworks.map((socialNetworkId) => (
-            <SelectedSocialNetworkItem
-              socialNetworkId={socialNetworkId}
-              dispatch={dispatch}
-            />
+          {selectedSocialNetworks.socialNetworks.map((socialNetworkId) => (
+            <SelectedSocialNetworkItem socialNetworkId={socialNetworkId} />
           ))}
         </List>
-        {selectedSocialNetworks.length < socialNetworksList.length && (
+        {selectedSocialNetworks.socialNetworks.length <
+          socialNetworksList.length && (
           <Button onClick={handleClick}>Add new</Button>
         )}
       </Stack>
@@ -141,10 +129,7 @@ const SocialNetworkPicker = ({
         }}
       >
         <Box width={'250px'} p={2} maxWidth={'100%'}>
-          <AvailableSocialNetworksList
-            onChange={handleSocialNetworkAdd}
-            selectedSocialNetwork={selectedSocialNetworks}
-          />
+          <AvailableSocialNetworksList onChange={handleSocialNetworkAdd} />
         </Box>
       </Popover>
     </>
