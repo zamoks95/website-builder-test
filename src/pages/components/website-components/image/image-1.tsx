@@ -1,6 +1,6 @@
 import { Component, ComponentField } from '../../../../domain/builder'
 
-const Header1Fields: ComponentField[] = [
+const Image1Fields: ComponentField[] = [
   {
     id: '__highlight__',
     name: 'Highlight',
@@ -21,7 +21,7 @@ const Header1Fields: ComponentField[] = [
   }
 ]
 
-const Header1Render = () => {
+const Image1Render = () => {
   return (
     <div className="lg:text-center">
       <h2 className="text-base text-__colorPrimary__-600 font-semibold tracking-wide uppercase">
@@ -37,11 +37,11 @@ const Header1Render = () => {
   )
 }
 
-const Header1: Component = {
-  id: 'header-1',
-  name: 'Header 1',
-  type: 'header',
-  fields: Header1Fields,
-  render: <Header1Render />
+const Image1: Component = {
+  id: 'image-1',
+  name: 'Image 1',
+  type: 'image',
+  fields: Image1Fields,
+  render: <Image1Render />
 }
-export { Header1 }
+export { Image1 }

@@ -1,24 +1,20 @@
 import { ReactNode } from 'react'
 
 import {
-  Hero1,
-  Footer1,
-  Header1,
-  Header2,
-  Item1,
-  Navigation1
+  FAQ1,
+  Gallery1,
+  Heading1,
+  Image1,
+  List1,
+  Location1,
+  Price1,
+  Quote1,
+  SocialNetwork1,
+  Text1,
+  Video1
 } from '../pages/components/website-components/'
 
-type ComponentType =
-  | 'header'
-  | 'item'
-  | 'image'
-  | 'hero'
-  | 'navigation'
-  | 'button'
-  | 'footer'
-  | 'youtube'
-  | 'spotify'
+import { ComponentTypeId } from './type'
 
 type ComponentField = {
   id: string
@@ -32,7 +28,7 @@ type ComponentId = string
 type Component = {
   id: ComponentId
   name: string
-  type: ComponentType
+  type: ComponentTypeId
   fields: ComponentField[]
   render: ReactNode
 }
@@ -40,7 +36,7 @@ type Component = {
 type ComponentThumbnail = {
   id: ComponentId
   name: string
-  type: ComponentType
+  type: ComponentTypeId
   render: ReactNode
 }
 
@@ -52,24 +48,31 @@ type Section = {
 }
 
 const componentsList: Component[] = [
-  { ...Hero1 },
-  { ...Footer1 },
-  { ...Item1 },
-  { ...Navigation1 },
-  { ...Header1 },
-  { ...Header2 }
+  { ...FAQ1 },
+  { ...Gallery1 },
+  { ...Heading1 },
+  { ...Image1 },
+  { ...List1 },
+  { ...Location1 },
+  { ...Price1 },
+  { ...Quote1 },
+  { ...SocialNetwork1 },
+  { ...Text1 },
+  { ...Video1 }
 ]
 
 const getComponentById = (id: ComponentId): Component =>
   componentsList.find((component) => component.id === id) ?? componentsList[0]
 
+const getComponentsByType = (type: ComponentTypeId): Component[] =>
+  componentsList.filter((component) => component.type === type)
+
 export type {
   Component,
   ComponentId,
   ComponentThumbnail,
-  ComponentType,
   ComponentField,
   Section
 }
 
-export { componentsList, getComponentById }
+export { componentsList, getComponentById, getComponentsByType }

@@ -1,6 +1,6 @@
 import { Component, ComponentField } from '../../../../domain/builder'
 
-const Navigation1Fields: ComponentField[] = [
+const Location1Fields: ComponentField[] = [
   {
     id: '__highlight__',
     name: 'Highlight',
@@ -21,7 +21,7 @@ const Navigation1Fields: ComponentField[] = [
   }
 ]
 
-const Navigation1Render = () => {
+const Location1Render = () => {
   return (
     <div className="lg:text-center">
       <h2 className="text-base text-__colorPrimary__-600 font-semibold tracking-wide uppercase">
@@ -37,11 +37,11 @@ const Navigation1Render = () => {
   )
 }
 
-const Navigation1: Component = {
-  id: 'navigation-1',
-  name: 'Navigation 1',
-  type: 'navigation',
-  fields: Navigation1Fields,
-  render: <Navigation1Render />
+const Location1: Component = {
+  id: 'location-1',
+  name: 'Location 1',
+  type: 'location',
+  fields: Location1Fields,
+  render: <Location1Render />
 }
-export { Navigation1 }
+export { Location1 }

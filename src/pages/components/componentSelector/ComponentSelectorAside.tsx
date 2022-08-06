@@ -7,14 +7,12 @@ import {
   Stack
 } from '@mui/material'
 
-import { ComponentType } from '../../../domain/builder'
+import { ComponentTypeId, componentTypeList } from '../../../domain/type'
 type ComponentSelectorAsideProps = {
-  typesList: ComponentType[]
-  selectedType: ComponentType
-  onChangeSelectedType: (newType: ComponentType) => void
+  selectedType: ComponentTypeId
+  onChangeSelectedType: (newType: ComponentTypeId) => void
 }
 const ComponentSelectorAside = ({
-  typesList,
   selectedType,
   onChangeSelectedType
 }: ComponentSelectorAsideProps) => {
@@ -28,16 +26,16 @@ const ComponentSelectorAside = ({
             overflowY: 'scroll'
           }}
         >
-          {typesList.map((type) => {
+          {componentTypeList.map(({ id, name }) => {
             return (
-              <ListItem disablePadding key={type}>
+              <ListItem disablePadding key={id}>
                 <ListItemButton
-                  onClick={() => onChangeSelectedType(type)}
+                  onClick={() => onChangeSelectedType(id)}
                   sx={{
-                    backgroundColor: selectedType === type ? 'lime' : 'initial'
+                    backgroundColor: selectedType === id ? 'lime' : 'initial'
                   }}
                 >
-                  <ListItemText primary={type} />
+                  <ListItemText primary={name} />
                 </ListItemButton>
               </ListItem>
             )
