@@ -10,6 +10,7 @@ type ComponentTypeId =
   | 'faq'
   | 'location'
   | 'price'
+  | 'footer'
 
 type ComponentType = {
   id: ComponentTypeId
@@ -27,7 +28,8 @@ const componentTypeList: ComponentType[] = [
   { id: 'socialnetwork', name: 'Social Network' },
   { id: 'faq', name: 'FAQ' },
   { id: 'location', name: 'Location' },
-  { id: 'price', name: 'Price' }
+  { id: 'price', name: 'Price' },
+  { id: 'footer', name: 'Footer' }
 ]
 
 const getComponentTypeById = (id: ComponentTypeId): ComponentType =>

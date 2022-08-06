@@ -2,16 +2,29 @@ import { ReactNode } from 'react'
 
 import {
   FAQ1,
+  FAQ2,
   Gallery1,
+  Gallery2,
   Heading1,
+  Heading2,
   Image1,
+  Image2,
   List1,
+  List2,
   Location1,
+  Location2,
   Price1,
+  Price2,
   Quote1,
+  Quote2,
   SocialNetwork1,
+  SocialNetwork2,
   Text1,
-  Video1
+  Text2,
+  Video1,
+  Video2,
+  Footer1,
+  Footer2
 } from '../pages/components/website-components/'
 
 import { ComponentTypeId } from './type'
@@ -49,16 +62,29 @@ type Section = {
 
 const componentsList: Component[] = [
   { ...FAQ1 },
+  { ...FAQ2 },
   { ...Gallery1 },
+  { ...Gallery2 },
   { ...Heading1 },
+  { ...Heading2 },
   { ...Image1 },
+  { ...Image2 },
   { ...List1 },
+  { ...List2 },
   { ...Location1 },
+  { ...Location2 },
   { ...Price1 },
+  { ...Price2 },
   { ...Quote1 },
+  { ...Quote2 },
   { ...SocialNetwork1 },
+  { ...SocialNetwork2 },
   { ...Text1 },
-  { ...Video1 }
+  { ...Text2 },
+  { ...Video1 },
+  { ...Video2 },
+  { ...Footer1 },
+  { ...Footer2 }
 ]
 
 const getComponentById = (id: ComponentId): Component =>

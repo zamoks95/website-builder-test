@@ -1,6 +1,6 @@
 import { AsideViewportPicker } from './AsideViewportPicker'
 import { AsideContent } from './AsideContent'
-import { Drawer, Toolbar, Divider } from '@mui/material'
+import { Drawer, Toolbar, Divider, Button } from '@mui/material'
 
 const Aside = () => {
   const drawerWidth = 300

@@ -8,6 +8,7 @@ import { selectSections } from '../slices/sections-slice'
 import { selectComponentSelector } from '../slices/component-selector-slice'
 import { Box } from '@mui/material'
 import { ComponentSelector } from './components/componentSelector/ComponentSelector'
+/* import { FormFields } from './components/FormFields' */
 
 const WebSiteBuilder = () => {
   const { viewport } = useAppSelector(selectViewport)
@@ -32,6 +33,7 @@ const WebSiteBuilder = () => {
         )} mx-auto border-solid border-black bg-white h-screen overflow-x-hidden`}
       >
         <Box sx={{ mt: 3 }}>
+          {/* <FormFields /> */}
           {sections.length > 0 &&
             sections.map((section) => (
               <Section

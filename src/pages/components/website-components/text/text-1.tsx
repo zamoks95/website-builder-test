@@ -23,16 +23,14 @@ const Text1Fields: ComponentField[] = [
 
 const Text1Render = () => {
   return (
-    <div className="lg:text-center">
-      <h2 className="text-base text-__colorPrimary__-600 font-semibold tracking-wide uppercase">
-        __highlight__
-      </h2>
-      <p className="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl">
-        __title__
-      </p>
-      <p className="mt-4 max-w-2xl text-xl text-gray-500 lg:mx-auto">
-        __subtitle__
-      </p>
+    <div className="pt-4 pb-14 text-center">
+      <div className="container px-4 sm:px-8 xl:px-4">
+        <p className="mb-4 text-gray-800 text-3xl leading-10 lg:max-w-5xl lg:mx-auto">
+          Team management mobile apps don’t get better than Pavo. It’s probably
+          the best app in the world for this purpose. Don’t hesitate to give it
+          a try today and you will fall in love with it
+        </p>
+      </div>
     </div>
   )
 }

@@ -25,15 +25,15 @@ type SectionProps = {
 }
 
 const replaceNodeWithDynamicVariables = (node: ReactNode, fields: any) => {
-  const primaryColor = useAppSelector(selectPrimaryColor)
-  const secondaryColor = useAppSelector(selectSecondaryColor)
+  /* const primaryColor = useAppSelector(selectPrimaryColor)
+  const secondaryColor = useAppSelector(selectSecondaryColor) */
 
   const stringifiedNode = renderToString(node)
   let newNode = stringifiedNode
   fields.forEach((field: any) => {
     newNode = reactStringReplace(newNode, field.id, () => field.value).join('')
   })
-  newNode = reactStringReplace(
+  /* newNode = reactStringReplace(
     newNode,
     '__colorPrimary__',
     () => primaryColor
@@ -43,7 +43,7 @@ const replaceNodeWithDynamicVariables = (node: ReactNode, fields: any) => {
     newNode,
     '__colorSecondary__',
     () => secondaryColor
-  ).join('')
+  ).join('') */
 
   return <div dangerouslySetInnerHTML={{ __html: newNode }} />
 }
@@ -203,5 +203,5 @@ const Section = ({ id, component, fields, order }: SectionProps) => {
   )
 }
 
-export { Section }
+export { Section, replaceNodeWithDynamicVariables }
 export type { SectionProps }
