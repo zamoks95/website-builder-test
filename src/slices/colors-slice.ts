@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+
 import { ColorId } from '../domain/color'
 import { RootState } from '../store'
 
