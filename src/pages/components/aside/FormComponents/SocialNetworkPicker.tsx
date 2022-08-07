@@ -24,7 +24,7 @@ import {
   selectSocialNetworks,
   addSocialNetwork,
   removeSocialNetwork
-} from '../../../../slices/social-networks-slice'
+} from '../../../../slices'
 
 type AvailableSocialNetworksListProps = {
   onChange: (newSocialNetwork: SocialNetwork['id']) => void

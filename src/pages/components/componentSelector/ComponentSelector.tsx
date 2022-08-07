@@ -5,8 +5,7 @@ import { ComponentTypeId } from '../../../domain/type'
 import { ComponentSelectorAside } from './ComponentSelectorAside'
 import { ComponentSelectorList } from './ComponentSelectorList'
 import { useAppDispatch } from '../../../hooks'
-import { addNewSection } from '../../../slices/sections-slice'
-import { closeComponentSelector } from '../../../slices/component-selector-slice'
+import { addNewSection, closeComponentSelector } from '../../../slices'
 type ComponentSelectorProps = {
   isOpen: boolean
 }

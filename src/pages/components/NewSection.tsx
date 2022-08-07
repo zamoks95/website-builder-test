@@ -3,8 +3,7 @@ import { IconButton, Tooltip, Box } from '@mui/material'
 import { AiOutlinePlus } from 'react-icons/ai'
 
 import { useAppDispatch } from '../../hooks'
-import { openComponentSelector } from '../../slices/component-selector-slice'
-import { updateTargetOrder } from '../../slices/sections-slice'
+import { openComponentSelector, updateTargetOrder } from '../../slices'
 
 const NewSection = () => {
   const dispatch = useAppDispatch()

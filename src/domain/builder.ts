@@ -1,4 +1,4 @@
-import { ReactNode } from 'react'
+import { ReactElement } from 'react'
 
 import {
   FAQ1,
@@ -43,14 +43,14 @@ type Component = {
   name: string
   type: ComponentTypeId
   fields: ComponentField[]
-  render: ReactNode
+  render: ReactElement
 }
 
 type ComponentThumbnail = {
   id: ComponentId
   name: string
   type: ComponentTypeId
-  render: ReactNode
+  render: ReactElement
 }
 
 type Section = {

@@ -3,9 +3,11 @@ import { ViewPort } from './components/aside/AsideViewportPicker'
 import { Section } from './components/Section'
 import { NewSection } from './components/NewSection'
 import { useAppSelector } from '../hooks'
-import { selectViewport } from '../slices/viewport-slice'
-import { selectSections } from '../slices/sections-slice'
-import { selectComponentSelector } from '../slices/component-selector-slice'
+import {
+  selectViewport,
+  selectSections,
+  selectComponentSelector
+} from '../slices'
 import { Box } from '@mui/material'
 import { ComponentSelector } from './components/componentSelector/ComponentSelector'
 /* import { FormFields } from './components/FormFields' */

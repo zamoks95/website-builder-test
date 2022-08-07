@@ -1,51 +1,25 @@
 import { useState, ReactNode } from 'react'
 import { Box, Button, Stack, TextField, Popover } from '@mui/material'
-import { renderToString } from 'react-dom/server'
-import reactStringReplace from 'react-string-replace'
 
 import { Component, ComponentField } from '../../domain/builder'
 import { useAppSelector, useAppDispatch } from '../../hooks'
 import {
-  selectPrimaryColor,
-  selectSecondaryColor
-} from '../../slices/colors-slice'
-import { openComponentSelector } from '../../slices/component-selector-slice'
-import {
+  openComponentSelector,
   updateSectionFields,
   updateTargetOrder,
   moveSection,
-  deleteSection
-} from '../../slices/sections-slice'
+  deleteSection,
+  selectPrimaryColor,
+  selectSecondaryColor
+} from '../../slices'
+
+import { replaceNodeWithDynamicVariables } from '../../utils/section'
 
 type SectionProps = {
   id: string
   component: Component
   fields: ComponentField[]
   order: number
-}
-
-const replaceNodeWithDynamicVariables = (node: ReactNode, fields: any) => {
-  /* const primaryColor = useAppSelector(selectPrimaryColor)
-  const secondaryColor = useAppSelector(selectSecondaryColor) */
-
-  const stringifiedNode = renderToString(node)
-  let newNode = stringifiedNode
-  fields.forEach((field: any) => {
-    newNode = reactStringReplace(newNode, field.id, () => field.value).join('')
-  })
-  /* newNode = reactStringReplace(
-    newNode,
-    '__colorPrimary__',
-    () => primaryColor
-  ).join('')
-
-  newNode = reactStringReplace(
-    newNode,
-    '__colorSecondary__',
-    () => secondaryColor
-  ).join('') */
-
-  return <div dangerouslySetInnerHTML={{ __html: newNode }} />
 }
 
 type ComponentWrapperProps = {
@@ -194,10 +168,19 @@ const ComponentWrapper = ({
 }
 
 const Section = ({ id, component, fields, order }: SectionProps) => {
+  const primaryColor = useAppSelector(selectPrimaryColor)
+  const secondaryColor = useAppSelector(selectSecondaryColor)
   return (
     <section id={id}>
       <ComponentWrapper fields={fields} sectionId={id} order={order}>
-        {replaceNodeWithDynamicVariables(component.render, fields)}
+        {replaceNodeWithDynamicVariables({
+          node: component.render,
+          fields,
+          color: {
+            primary: primaryColor,
+            secondary: secondaryColor
+          }
+        })}
       </ComponentWrapper>
     </section>
   )

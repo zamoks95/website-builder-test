@@ -11,10 +11,7 @@ import {
   FontFamilyId
 } from '../../../../domain/typography'
 import { useAppSelector, useAppDispatch } from '../../../../hooks'
-import {
-  selectFontFamily,
-  updateFamily
-} from '../../../../slices/typography-slice'
+import { selectFontFamily, updateFamily } from '../../../../slices'
 
 const SelectFontFamily = () => {
   const selectedFamily = useAppSelector(selectFontFamily)

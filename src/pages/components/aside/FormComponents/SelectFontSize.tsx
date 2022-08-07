@@ -8,7 +8,7 @@ import {
 } from '@mui/material'
 import { availableFontSizes, FontSizeId } from '../../../../domain/typography'
 import { useAppSelector, useAppDispatch } from '../../../../hooks'
-import { selectFontSize, updateSize } from '../../../../slices/typography-slice'
+import { selectFontSize, updateSize } from '../../../../slices'
 
 const SelectFontSize = () => {
   const selectedSize = useAppSelector(selectFontSize)

@@ -13,7 +13,7 @@ import {
   selectSecondaryColor,
   updatePrimary,
   updateSecondary
-} from '../../../../slices/colors-slice'
+} from '../../../../slices'
 
 type ColorPickerProps = {
   title: string

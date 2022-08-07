@@ -1,7 +1,7 @@
 import { Box, ButtonGroup, Button, Typography } from '@mui/material'
 
 import { useAppSelector, useAppDispatch } from '../../../hooks'
-import { selectViewport, changeViewport } from '../../../slices/viewport-slice'
+import { selectViewport, changeViewport } from '../../../slices'
 
 type ViewPort = 'mobile' | 'tablet' | 'desktop'
 
